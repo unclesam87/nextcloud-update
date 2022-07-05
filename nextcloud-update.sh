@@ -3,6 +3,7 @@ set -e
 dt=(date '+%m-%d-%Y')
 folder=$1
 version=$2
+folder_bkp="$folder"_bkp_"$dt"
 if [[ `ps -acx|grep apache|wc -l` > 0 ]]; then
     echo "Configured with Apache"
         webservice="apache2"
@@ -27,7 +28,7 @@ else
                         then
                         echo "Alles gut - es geht los"
                                 set -x
-                                mv $folder "$folder"_bkp
+                                mv $folder "$folder_bkp"
                                 if ! find nextcloud-$version.zip
                                 then
                                   wget https://download.nextcloud.com/server/releases/nextcloud-$version.zip
@@ -37,7 +38,7 @@ else
                                 fi
                                 systemctl stop $webservice
                                 mv nextcloud $folder
-                                cp "$folder"_bkp/config/config.php $folder/config/config.php
+                                cp "$folder_bkp"/config/config.php $folder/config/config.php
                                 chown -R www-data:www-data $folder;
                                 find $folder/ -type d -exec chmod 750 {} \;
                                 find $folder/ -type f -exec chmod 640 {} \;
