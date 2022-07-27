@@ -32,12 +32,16 @@ else
                                 if ! find nextcloud-$version.zip
                                 then
                                   wget https://download.nextcloud.com/server/releases/nextcloud-$version.zip
-                                  unzip nextcloud-$version
+                                  unzip nextcloud-$version 
                                 else 
                                   unzip nextcloud-$version
                                 fi
                                 systemctl stop $webservice
+                                if ! $folder=nextcloud
+                                then
                                 mv nextcloud $folder
+                                else
+                                fi
                                 cp "$folder_bkp"/config/config.php $folder/config/config.php
                                 chown -R www-data:www-data $folder;
                                 find $folder/ -type d -exec chmod 750 {} \;
