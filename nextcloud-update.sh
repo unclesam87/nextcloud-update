@@ -1,6 +1,6 @@
 set -e
 #set stop error
-dt=(date '+%m-%d-%Y')
+dt=$(date '+%m-%d-%Y')
 folder=$1
 version=$2
 folder_bkp="$folder"_bkp_"$dt"
