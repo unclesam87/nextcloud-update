@@ -40,7 +40,6 @@ else
                                 if ! $folder=nextcloud
                                 then
                                 mv nextcloud $folder
-                                else
                                 fi
                                 cp "$folder_bkp"/config/config.php $folder/config/config.php
                                 chown -R www-data:www-data $folder;
