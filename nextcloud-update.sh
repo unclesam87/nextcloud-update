@@ -1,5 +1,5 @@
-set -e
 #set stop error
+set -e
 dt=$(date '+%m-%d-%Y')
 folder=$1
 version=$2
@@ -14,19 +14,19 @@ if [[ `ps -acx|grep nginx|wc -l` > 0 ]]; then
 fi
 if [ -z "$folder" ]
 then
-      echo "Ordner Angabe fehlt"
+      echo "folder info is missing"
       exit
 else
         if [ -z "$version" ]
         then
-                echo "NextcloudVersionsnummer fehlt"
+                echo "NextcloudVersionsnumber is missing"
                 exit
         else
                 if !  grep -q "'version' => '$version" "$folder/config/config.php"
                 then
                         if ! grep -q "'maintenance' => true" "$folder/config/config.php"
                         then
-                        echo "Alles gut - es geht los"
+                        echo "everything is fine"
                                 set -x
                                 mv $folder "$folder_bkp"
                                 if ! find nextcloud-$version.zip
@@ -53,10 +53,10 @@ else
                                 sudo -u www-data php $folder/occ app:update --all
                                 sudo -u www-data php $folder/occ maintenance:repair
                         else
-                                echo "Nextcloud noch im Maintance Mode"
+                                echo "Nextcloud is in the maintance mode"
                         fi
                 else
-                                echo "Version $version ist schon installiert"
+                                echo "version $version is allready installed"
                 fi
         fi
 fi
