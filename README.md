@@ -11,7 +11,7 @@ tips and improvements are more then welcomed so feel free to open an issue
  ```
     nextcloud-update.sh foldername versionnumber
  ```
- ```
-    example:
+example:
+```
     nextcloud-update.sh /var/www/nextcloud 25.01
  ```
