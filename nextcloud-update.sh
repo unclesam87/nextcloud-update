@@ -32,7 +32,7 @@ else
                                 mv $folder "$folder_bkp"
                                 cd /tmp
                                 wget https://download.nextcloud.com/server/releases/nextcloud-$version.zip
-                                unzip nextcloud-$version 
+                                unzip -q nextcloud-$version 
                                 mv nextcloud $folder
                                 cp "$folder_bkp"/config/config.php $folder/config/config.php
                                 chown -R www-data:www-data $folder
