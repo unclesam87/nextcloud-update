@@ -28,30 +28,24 @@ else
                         then
                         echo "everything is fine"
                                 set -x
-                                mv $folder "$folder_bkp"
-                                if ! find nextcloud-$version.zip
-                                then
-                                  wget https://download.nextcloud.com/server/releases/nextcloud-$version.zip
-                                  unzip nextcloud-$version 
-                                else 
-                                  unzip nextcloud-$version
-                                fi
                                 systemctl stop $webservice
-                                if ! $folder=nextcloud
-                                then
+                                mv $folder "$folder_bkp"
+                                cd /tmp
+                                wget https://download.nextcloud.com/server/releases/nextcloud-$version.zip
+                                unzip nextcloud-$version 
                                 mv nextcloud $folder
-                                fi
                                 cp "$folder_bkp"/config/config.php $folder/config/config.php
-                                chown -R www-data:www-data $folder;
+                                chown -R www-data:www-data $folder
                                 find $folder/ -type d -exec chmod 750 {} \;
                                 find $folder/ -type f -exec chmod 640 {} \;
                                 systemctl start $webservice
                                 sudo -u www-data php $folder/occ upgrade
+                                sudo -u www-data php $folder/occ db:add-missing-columns
                                 sudo -u www-data php $folder/occ db:add-missing-indices
                                 sudo -u www-data php $folder/occ db:add-missing-primary-keys
-                                sudo -u www-data php $folder/occ db:add-missing-columns
                                 sudo -u www-data php $folder/occ app:update --all
                                 sudo -u www-data php $folder/occ maintenance:repair
+                                rm nextcloud-$version.zip
                         else
                                 echo "Nextcloud is in the maintance mode"
                         fi
