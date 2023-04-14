@@ -32,8 +32,8 @@ else
                                 mv $folder "$folder_bkp"
                                 cd /tmp
                                 wget https://download.nextcloud.com/server/releases/nextcloud-$version.zip
-                                unzip -q nextcloud-$version 
-                                mv nextcloud $folder
+                                unzip -q -d /tmp/nextcloud-update/ -j nextcloud-$version 
+                                mv /tmp/nextcloud-update $folder
                                 cp "$folder_bkp"/config/config.php $folder/config/config.php
                                 chown -R www-data:www-data $folder
                                 find $folder/ -type d -exec chmod 750 {} \;
