@@ -29,11 +29,11 @@ else
                         echo "everything is fine"
                                 set -x
                                 systemctl stop $webservice
-                                mv $folder "$folder_bkp"
                                 cd /tmp
                                 wget https://download.nextcloud.com/server/releases/nextcloud-$version.zip
-                                unzip -q -d /tmp/nextcloud-update/ -j nextcloud-$version 
-                                mv /tmp/nextcloud-update $folder
+                                unzip -q nextcloud-$version 
+                                mv $folder "$folder_bkp"
+                                mv nextcloud $folder
                                 cp "$folder_bkp"/config/config.php $folder/config/config.php
                                 chown -R www-data:www-data $folder
                                 find $folder/ -type d -exec chmod 750 {} \;
@@ -44,8 +44,9 @@ else
                                 sudo -u www-data php $folder/occ db:add-missing-indices
                                 sudo -u www-data php $folder/occ db:add-missing-primary-keys
                                 sudo -u www-data php $folder/occ app:update --all
-                                sudo -u www-data php $folder/occ maintenance:repair
+                                sudo -u www-data php $folder/occ maintenance:repair --include-expensive
                                 rm nextcloud-$version.zip
+#                                rm -rf "$folder_bkp"
                         else
                                 echo "Nextcloud is in the maintance mode"
                         fi
