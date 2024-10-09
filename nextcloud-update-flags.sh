@@ -13,6 +13,8 @@ usage() {
     echo "Usage: $0 -v <version> -f <folder>"
     echo "  -v    Specify the version (e.g. 1.2.3)"
     echo "  -f    Specify the folder path (e.g. /var/www/cloudfolder)"
+    echo "  -r    Specify a script to run at the end (e.g. ./myscript.sh)"
+    echo "   \? 	  print this usage"
     exit 1
 }
 
@@ -24,6 +26,9 @@ while getopts ":v:f:" opt; do
             ;;
         f)
             folder="$OPTARG"
+            ;;
+	r)
+            script="$OPTARG"
             ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
