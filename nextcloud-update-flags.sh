@@ -13,7 +13,7 @@ usage() {
     echo "Usage: $0 -v <version> -f <folder>"
     echo "  -v    Specify the version (e.g. 1.2.3)"
     echo "  -f    Specify the folder path (e.g. /var/www/cloudfolder)"
-    echo "  -r    Remove the bkp_folder at the end of the script""
+    echo "  -r    Remove the bkp_folder at the end of the script"
     echo "   \? 	  print this usage"
     exit 1
 }
