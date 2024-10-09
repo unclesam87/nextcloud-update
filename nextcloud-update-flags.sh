@@ -58,7 +58,7 @@ folder_bkp="$folder"_bkp_"$dt"
 exec > >(tee -i -a "/var/log/nextcloud/$folder-nextcloudupdate.log")
 exec 2>&1
 # Check if version and folder are set
-if [ -z "$version" ] || [ -z "$folder" ]; then
+if [[ -z "$version" ]] || [[ -z "$folder" ]]; then
     echo "Both version and folder must be specified." >&2
     usage
 fi
