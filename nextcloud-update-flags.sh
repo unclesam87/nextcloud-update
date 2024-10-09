@@ -11,8 +11,8 @@ fi
 # Function to display help
 usage() {
     echo "Usage: $0 -v <version> -f <folder>"
-    echo "  -v    Specify the version (e.g., 1.2.3)"
-    echo "  -f    Specify the folder path"
+    echo "  -v    Specify the version (e.g. 1.2.3)"
+    echo "  -f    Specify the folder path (e.g. /var/www/cloudfolder)"
     exit 1
 }
 
