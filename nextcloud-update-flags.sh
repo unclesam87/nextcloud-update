@@ -93,7 +93,7 @@ compare_versions() {
 }
 
 # Check if the config_version variable is not empty
-if [ -z "$config_version" ]; then
+if [[ -z "$config_version" ]]; then
     echo "Could not find a valid version in config.php."
     exit 1
 fi
