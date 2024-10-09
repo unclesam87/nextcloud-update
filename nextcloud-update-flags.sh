@@ -13,11 +13,11 @@ usage() {
     echo "Usage: $0 -v <version> -f <folder>"
     echo "  -v    Specify the version (e.g. 1.2.3)"
     echo "  -f    Specify the folder path (e.g. /var/www/cloudfolder)"
-    echo "  -r    Specify a script to run at the end (e.g. ./myscript.sh)"
+    echo "  -r    Remove the bkp_folder at the end of the script""
     echo "   \? 	  print this usage"
     exit 1
 }
-
+remove_bkpfolder=false
 # Parse command-line arguments
 while getopts ":v:f:" opt; do
     case $opt in
@@ -27,8 +27,8 @@ while getopts ":v:f:" opt; do
         f)
             folder="$OPTARG"
             ;;
-	r)
-            script="$OPTARG"
+        r)
+            remove_bkpfolder=true
             ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
@@ -170,7 +170,16 @@ else
 	${echo} "start cron"
 	${systemctl} start cron
 	${rm} nextcloud-$version.zip
-	${rm} -rf $folder_bkp
+	# If the remove flag is set, run the removal command
+	if [ "$remove_bkpfolder" = true ]; then
+	    echo "Removing folder: $folder"
+	    rm -rf "$folder"
+	    if [ $? -eq 0 ]; then
+	        echo "Folder removed successfully."
+	    else
+	        echo "Failed to remove folder." >&2
+	    fi
+	fi
 	${echo} ""
 	${echo} "Update done at $(date '+%d-%m-%Y %H:%M:%S')"
 	${echo} ""
