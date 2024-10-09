@@ -2,7 +2,7 @@
 # running as root?
 clear
 set -e
-if [ "$(id -u)" != "0" ]; then
+if [[ "$(id -u)" != "0" ]]; then
 	echo
 	echo "Please run as root!"
 	echo 
@@ -23,9 +23,8 @@ sudo=$(command -v sudo)
 systemctl=$(command -v systemctl)
 wget=$(command -v wget)
 unzip=$(command -v unzip)
-# Date
-dt=$(${date} '+%d-%m-%Y')
 # Variables
+dt=$(${date} '+%d-%m-%Y')
 folder=$1
 version=$2
 folder_bkp="$folder"_bkp_"$dt"
