@@ -172,8 +172,8 @@ else
 	${rm} nextcloud-$version.zip
 	# If the remove flag is set, run the removal command
 	if [ "$remove_bkpfolder" = true ]; then
-	    echo "Removing folder: $folder"
-	    rm -rf "$folder"
+	    echo "Removing folder: $folder_bkp"
+	    rm -rf "$folder_bkp"
 	    if [ $? -eq 0 ]; then
 	        echo "Folder removed successfully."
 	    else
