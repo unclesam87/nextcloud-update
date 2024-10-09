@@ -2,7 +2,7 @@
 # running as root
 clear
 set -e
-if [ "$(id -u)" != "0" ]; then
+if [[ "$(id -u)" != "0" ]]; then
 	echo
 	echo "Please run as root!"
 	echo 
@@ -51,9 +51,8 @@ sudo=$(command -v sudo)
 systemctl=$(command -v systemctl)
 wget=$(command -v wget)
 unzip=$(command -v unzip)
-# Date
-dt=$(${date} '+%d-%m-%Y')
 # Variables
+dt=$(${date} '+%d-%m-%Y')
 folder_bkp="$folder"_bkp_"$dt"
 # Logfile
 exec > >(tee -i -a "/var/log/nextcloud/$folder-nextcloudupdate.log")
