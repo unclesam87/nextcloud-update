@@ -30,7 +30,7 @@ folder=$1
 version=$2
 folder_bkp="$folder"_bkp_"$dt"
 # Logfile
-exec > >(tee -i -a "/var/log/nextcloud/$folder_bkp-nextcloudupdate.log")
+exec > >(tee -i -a "/var/log/nextcloud/$folder-nextcloudupdate.log")
 exec 2>&1
 # Check if folder and version is set
 if [[ -z "$folder" ]] || [[ -z "$version" ]]
