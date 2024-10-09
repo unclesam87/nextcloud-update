@@ -103,7 +103,7 @@ if compare_versions "$config_version" "$version"; then
     echo "The version in the config is newer or the same as the specified version."
     exit 1
 else
-    echo "The specified version is newer than the version in the config."
+	echo "The specified version is newer than the version in the config."
 	cd /tmp
 	if test -f "nextcloud-$version.zip"
 	then
