@@ -3,20 +3,47 @@
 clear
 set -e
 if [[ "$(id -u)" != "0" ]]; then
-	echo
+	echo ""
 	echo "Please run as root!"
-	echo 
+	echo ""
 	exit 1
 fi
 # Function to display help
 usage() {
+    echo ""
     echo "Usage: $0 -v <version> -f <folder>"
     echo "  -v    Specify the version (e.g. 1.2.3)"
     echo "  -f    Specify the folder path (e.g. /var/www/cloudfolder)"
-    echo "  -r    Remove the bkp_folder at the end of the script"
-    echo "   \? 	  print this usage"
+    echo "  -r    If argumented, then remove the bkp_folder at the end of the script"
+    echo ""
     exit 1
 }
+
+# Function to compare versions
+compare_versions() {
+    local local_ver1="$1"
+    local local_ver2="$2"
+
+    # Split the version strings into arrays
+    IFS='.' read -r -a v1 <<< "$local_ver1"
+    IFS='.' read -r -a v2 <<< "$local_ver2"
+
+    # Compare each segment
+    for i in "${!v1[@]}"; do
+        # If v2 doesn't have this segment, it's newer
+        if [[ -z ${v2[i]} ]]; then
+            return 1
+        fi
+        if (( 10#${v1[i]} < 10#${v2[i]} )); then
+            return 1
+        elif (( 10#${v1[i]} > 10#${v2[i]} )); then
+            return 0
+        fi
+    done
+    # If we finished checking, v1 is equal to or older than v2
+    return 1
+}
+
 remove_bkpfolder=false
 # Parse command-line arguments
 while getopts ":v:f:" opt; do
@@ -31,11 +58,15 @@ while getopts ":v:f:" opt; do
             remove_bkpfolder=true
             ;;
         \?)
-            echo "Invalid option: -$OPTARG" >&2
+            echo ""
+	    echo "Invalid option: -$OPTARG"
+	    echo ""
             usage
             ;;
         :)
-            echo "Option -$OPTARG requires an argument." >&2
+            echo ""
+	    echo "Option -$OPTARG requires an argument."
+	    echo ""
             usage
             ;;
     esac
@@ -64,62 +95,46 @@ exec > >(tee -i -a "/var/log/nextcloud/$folder-nextcloudupdate.log")
 exec 2>&1
 # Check if folder ends with /
 if [[ "$folder" == */ ]]; then
-    echo "The folder path must not end with a '/'. Please remove the trailing slash." >&2
+    ${echo} ""
+    ${echo} "The folder path must not end with a '/'. Please remove the trailing slash."
+    ${echo} ""
     exit 1
 fi
 # Check if version and folder are set
 if [[ -z "$version" ]] || [[ -z "$folder" ]]; then
-    echo "Both version and folder must be specified." >&2
+    ${echo} ""
+    ${echo} "Both version and folder must be specified."
+    ${echo} ""
     usage
 fi
 
 # Extract the version from config.php
 config_version=$(grep -oP "'version' => \'d+\.\d+\.\d+(?:\.\d+)?'" "$folder/config/config.php" | head -n 1)
 
-# Function to compare versions
-compare_versions() {
-    local local_ver1="$1"
-    local local_ver2="$2"
-
-    # Split the version strings into arrays
-    IFS='.' read -r -a v1 <<< "$local_ver1"
-    IFS='.' read -r -a v2 <<< "$local_ver2"
-
-    # Compare each segment
-    for i in "${!v1[@]}"; do
-        # If v2 doesn't have this segment, it's newer
-        if [[ -z ${v2[i]} ]]; then
-            return 1
-        fi
-        if (( 10#${v1[i]} < 10#${v2[i]} )); then
-            return 1
-        elif (( 10#${v1[i]} > 10#${v2[i]} )); then
-            return 0
-        fi
-    done
-
-    # If we finished checking, v1 is equal to or older than v2
-    return 1
-}
-
 # Check if the config_version variable is not empty
 if [[ -z "$config_version" ]]; then
-    echo "Could not find a valid version in config.php."
+    ${echo} ""
+    ${echo} "Could not find a valid version in config.php."
+    ${echo} ""
     exit 1
 fi
 
 # Compare versions
 if compare_versions "$config_version" "$version"; then
-    echo "The version in the config is newer or the same as the specified version."
+    ${echo} ""
+    ${echo} "The version in the config is newer or the same as the specified version."
+    ${echo} ""
     exit 1
 else
-	echo "The specified version is newer than the version in the config."
+	${echo} ""
+ 	${echo} "The given version is newer than the installed version in the config."
+  	${echo} ""
 	cd /tmp
 	if test -f "nextcloud-$version.zip"
 	then
 	${rm} nextcloud-$version.zip
 	fi
-	if [ -d "nextcloud-$version" ]; then
+	if [[ -d "nextcloud-$version" ]]; then
 	${rm} -rf nextcloud-$version
 	fi
 	${echo} ""
@@ -171,10 +186,12 @@ else
 	${systemctl} start cron
 	${rm} nextcloud-$version.zip
 	# If the remove flag is set, run the removal command
-	if [ "$remove_bkpfolder" = true ]; then
-	    ${echo} "Removing folder: $folder_bkp"
+	if [[ "$remove_bkpfolder" = true ]]; then
+	    ${echo} ""
+     	    ${echo} "Removing folder: $folder_bkp"
+	    ${echo} ""
 	    ${rm}-rf "$folder_bkp"
-	    if [ $? -eq 0 ]; then
+	    if [[ $? -eq 0 ]]; then
 	        ${echo} "Folder removed successfully."
 	    else
 	        ${echo} "Failed to remove folder."
