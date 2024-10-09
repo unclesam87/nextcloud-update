@@ -57,6 +57,11 @@ folder_bkp="$folder"_bkp_"$dt"
 # Logfile
 exec > >(tee -i -a "/var/log/nextcloud/$folder-nextcloudupdate.log")
 exec 2>&1
+# Check if folder ends with /
+if [[ "$folder" == */ ]]; then
+    echo "The folder path must not end with a '/'. Please remove the trailing slash." >&2
+    exit 1
+fi
 # Check if version and folder are set
 if [[ -z "$version" ]] || [[ -z "$folder" ]]; then
     echo "Both version and folder must be specified." >&2
