@@ -23,13 +23,14 @@ sudo=$(command -v sudo)
 systemctl=$(command -v systemctl)
 wget=$(command -v wget)
 unzip=$(command -v unzip)
-# Logfile
-exec > >(tee -i -a "/var/log/nextcloud/nextcloudupdate.log")
-exec 2>&1
 # Date
 dt=$(${date} '+%d-%m-%Y')
 folder=$1
 version=$2
+folder_bkp="$folder"_bkp_"$dt"
+# Logfile
+exec > >(tee -i -a "/var/log/nextcloud/$folder_bkp-nextcloudupdate.log")
+exec 2>&1
 if [[ -z "$folder" ]] || [[ -z "$version" ]]
 then
       ${echo} ""
@@ -40,7 +41,7 @@ else
     if !  ${grep} -q "'version' => '$version'" "$folder/config/config.php"
     then
 # main
-		folder_bkp="$folder"_bkp_"$dt"
+
 		cd /tmp
 		if test -f "nextcloud-$version.zip"
 		then
