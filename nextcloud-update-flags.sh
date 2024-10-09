@@ -64,7 +64,7 @@ if [[ -z "$version" ]] || [[ -z "$folder" ]]; then
 fi
 
 # Extract the version from config.php
-config_version=$(grep -oP "\d+\.\d+\.\d+(?:\.\d+)?" "$folder/config/config.php" | head -n 1)
+config_version=$(grep -oP "'version' => \'d+\.\d+\.\d+(?:\.\d+)?'" "$folder/config/config.php" | head -n 1)
 
 # Function to compare versions
 compare_versions() {
