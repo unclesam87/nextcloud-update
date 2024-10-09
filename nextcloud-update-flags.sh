@@ -177,7 +177,7 @@ else
 	    if [ $? -eq 0 ]; then
 	        echo "Folder removed successfully."
 	    else
-	        echo "Failed to remove folder." >&2
+	        echo "Failed to remove folder."
 	    fi
 	fi
 	${echo} ""
