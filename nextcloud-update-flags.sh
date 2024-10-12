@@ -92,7 +92,7 @@ dt=$(${date} '+%d-%m-%Y')
 folder_bkp="$folder"_bkp_"$dt"
 folder_name=$(basename "$folder")
 # Logfile
-exec > >(tee -i -a "/var/log/nextcloud/$folder_name-nextcloudupdate.log")
+exec > >(tee -i -a "/var/log/nextcloud/$folder_name-update.log")
 exec 2>&1
 # Check if folder ends with /
 if [[ "$folder" == */ ]]; then
