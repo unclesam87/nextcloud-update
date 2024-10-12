@@ -9,9 +9,9 @@ tips and improvements are more then welcomed so feel free to open an issue
  2.  chmod +x 
  3.  use script:
  ```
-    nextcloud-update.sh foldername versionnumber
+    nextcloud-update.sh -v versionnumber -f pathtonextcloudfolder -r (when u wanna delete the backup folder afterwards)
  ```
 example:
 ```
-    nextcloud-update.sh /var/www/nextcloud 25.01
+    nextcloud-update.sh -v 29.0.8 -f /var/www/nextcloud -r
  ```
