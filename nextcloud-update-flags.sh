@@ -46,7 +46,7 @@ compare_versions() {
 
 remove_bkpfolder=false
 # Parse command-line arguments
-while getopts ":v:f:" opt; do
+while getopts ":v:f:r:" opt; do
     case $opt in
         v)
             version="$OPTARG"
@@ -109,8 +109,7 @@ if [[ -z "$version" ]] || [[ -z "$folder" ]]; then
 fi
 
 # Extract the version from config.php
-config_version=$(grep -oP "'version' => \'d+\.\d+\.\d+(?:\.\d+)?'" "$folder/config/config.php" | head -n 1)
-
+config_version=$(grep -oP "'version' => '.*'" "$folder/config/config.php" | grep -oP '\d+\.\d+\.\d+(?:\.\d+)?' | head -n 1)
 # Check if the config_version variable is not empty
 if [[ -z "$config_version" ]]; then
     ${echo} ""
