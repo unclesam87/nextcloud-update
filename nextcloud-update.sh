@@ -46,7 +46,7 @@ compare_versions() {
 
 remove_bkpfolder=false
 # Parse command-line arguments
-while getopts ":v:f:r:" opt; do
+while getopts ":v:f:r" opt; do
     case $opt in
         v)
             version="$OPTARG"
@@ -190,7 +190,7 @@ else
 	    ${echo} ""
      	    ${echo} "Removing folder: $folder_bkp"
 	    ${echo} ""
-	    ${rm}-rf "$folder_bkp"
+	    ${rm} -rf "$folder_bkp"
 	    if [[ $? -eq 0 ]]; then
 	        ${echo} "Folder removed successfully."
 	    else
