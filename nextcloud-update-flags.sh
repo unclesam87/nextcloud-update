@@ -46,7 +46,7 @@ compare_versions() {
 
 remove_bkpfolder=false
 # Parse command-line arguments
-while getopts ":v:f:" opt; do
+while getopts ":v:f:r:" opt; do
     case $opt in
         v)
             version="$OPTARG"
