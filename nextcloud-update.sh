@@ -87,7 +87,7 @@ if [[ ! -d "$log_dir" ]]; then
 fi
 
 # Redirect output to log file
-exec > >(tee -i -a "$log_dir/$folder_name-nextcloudupdate.log")
+exec > >(tee -i -a "$log_dir/$folder_name-update.log")
 exec 2>&1
 
 echo "Starting script..."
