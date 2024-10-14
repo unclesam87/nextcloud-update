@@ -1,4 +1,8 @@
 #!/bin/bash
+# nextcloud-update.sh	Script to update Nextcloud to a specific version
+# github: https://github.com/unclesam87/nextcloud-update
+# thx to: devgitw23 for bugfixing and log function
+# thx to: carsten rieger for the inspiration and his great tutorials
 # running as root
 clear
 set -e
@@ -28,20 +32,25 @@ compare_versions() {
     IFS='.' read -r -a v1 <<< "$local_ver1"
     IFS='.' read -r -a v2 <<< "$local_ver2"
 
+    # Pad the shorter version with zeros
+    while [[ ${#v1[@]} -lt ${#v2[@]} ]]; do
+        v1+=("0")
+    done
+    while [[ ${#v2[@]} -lt ${#v1[@]} ]]; do
+        v2+=("0")
+    done
+
     # Compare each segment
     for i in "${!v1[@]}"; do
-        # If v2 doesn't have this segment, it's newer
-        if [[ -z ${v2[i]} ]]; then
+        if ((10#${v1[i]} > 10#${v2[i]})); then
             return 1
-        fi
-        if (( 10#${v1[i]} < 10#${v2[i]} )); then
-            return 1
-        elif (( 10#${v1[i]} > 10#${v2[i]} )); then
-            return 0
+        elif ((10#${v1[i]} < 10#${v2[i]})); then
+            return 2
         fi
     done
-    # If we finished checking, v1 is equal to or older than v2
-    return 1
+
+    # If all segments are equal
+    return 0
 }
 
 remove_bkpfolder=false
@@ -110,7 +119,7 @@ if [[ -z "$version" ]] || [[ -z "$folder" ]]; then
 fi
 
 # Extract the version from config.php
-config_version=$(grep -oP "'version' => '.*'" "$folder/config/config.php" | grep -oP '\d+\.\d+\.\d+(?:\.\d+)?' | head -n 1)
+config_version=$(sudo -u www-data php "$folder/occ" status | grep -oP '(?<=versionstring: )\d+\.\d+\.\d+(?:\.\d+)?')
 # Check if the config_version variable is not empty
 if [[ -z "$config_version" ]]; then
     ${echo} ""
@@ -120,10 +129,15 @@ if [[ -z "$config_version" ]]; then
 fi
 
 # Compare versions
-if compare_versions "$config_version" "$version"; then
-    ${echo} ""
-    ${echo} "The version in the config is newer or the same as the specified version."
-    ${echo} ""
+if [[ $compare_result -eq 0 ]]; then
+    echo ""
+    echo "The version in the config is the same as the specified version."
+    echo ""
+    exit 1
+elif [[ $compare_result -eq 1 ]]; then
+    echo ""
+    echo "The version in the config is newer than the specified version."
+    echo ""
     exit 1
 else
 	${echo} ""
@@ -190,7 +204,7 @@ else
 	    ${echo} ""
      	    ${echo} "Removing folder: $folder_bkp"
 	    ${echo} ""
-	    ${rm}-rf "$folder_bkp"
+	    ${rm} -rf "$folder_bkp"
 	    if [[ $? -eq 0 ]]; then
 	        ${echo} "Folder removed successfully."
 	    else
