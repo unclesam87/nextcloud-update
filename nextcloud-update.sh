@@ -1,4 +1,8 @@
 #!/bin/bash
+# nextcloud-update.sh	Script to update Nextcloud to a specific version
+# github: https://github.com/unclesam87/nextcloud-update
+# thx to: devgitw23 for bugfixing and log function
+# thx to: carsten rieger for the inspiration and his great tutorials
 # running as root
 clear
 set -e
