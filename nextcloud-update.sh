@@ -130,14 +130,14 @@ fi
 
 # Compare versions
 if [[ $compare_result -eq 0 ]]; then
-    echo ""
-    echo "The version in the config is the same as the specified version."
-    echo ""
+   ${echo} ""
+   ${echo} "The version in the config is the same as the specified version."
+   ${echo} ""
     exit 1
 elif [[ $compare_result -eq 1 ]]; then
-    echo ""
-    echo "The version in the config is newer than the specified version."
-    echo ""
+    ${echo} ""
+	${echo}  "The version in the config is newer than the specified version."
+	${echo} ""
     exit 1
 else
 	${echo} ""
