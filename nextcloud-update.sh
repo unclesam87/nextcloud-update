@@ -78,7 +78,8 @@ shift $((OPTIND -1))
 
 # Normalize the folder variable to extract only the folder name
 folder_name=$(basename "$folder")
-
+# other variables
+folder_bkp="${folder}_bkp" 
 # Ensure the log directory exists
 log_dir="/var/log/nextcloud"
 if [[ ! -d "$log_dir" ]]; then
@@ -112,7 +113,7 @@ echo "Folder: $folder"
 
 # Extract the versionstring from occ status
 config_version=$(sudo -u www-data php "$folder/occ" status | grep -oP '(?<=versionstring: )\d+\.\d+\.\d+(?:\.\d+)?')
-
+x
 echo "Config version: $config_version"
 
 # Check if the config_version variable is not empty
