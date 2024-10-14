@@ -75,7 +75,6 @@ done
 
 # Shift the processed options away
 shift $((OPTIND -1))
-
 # Normalize the folder variable to extract only the folder name
 folder_name=$(basename "$folder")
 # other variables
