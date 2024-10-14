@@ -1,4 +1,18 @@
 #!/bin/bash
+# nextcloud-update.sh	Script to update Nextcloud to a specific version
+# github: https://github.com/unclesam87/nextcloud-update
+# thx to: devgitw23 for bugfixing and log function
+# thx to: carsten rieger for the inspiration and his great tutorials
+clear
+set -e
+
+# running as root
+if [[ "$(id -u)" != "0" ]]; then
+	echo ""
+	echo "Please run as root!"
+	echo ""
+	exit 1
+fi
 
 # Initialize variables with default values
 version=""
@@ -112,7 +126,7 @@ echo "Folder: $folder"
 
 # Extract the versionstring from occ status
 config_version=$(sudo -u www-data php "$folder/occ" status | grep -oP '(?<=versionstring: )\d+\.\d+\.\d+(?:\.\d+)?')
-x
+
 echo "Config version: $config_version"
 
 # Check if the config_version variable is not empty
@@ -127,7 +141,7 @@ fi
 echo "Comparing versions: $config_version vs $version"
 compare_versions "$config_version" "$version"
 compare_result=$?
-
+# can be removed when it runs without errors - but for the moment it will stay just to check the result
 echo "Compare result: $compare_result"
 
 if [[ $compare_result -eq 0 ]]; then
