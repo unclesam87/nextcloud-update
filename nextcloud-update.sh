@@ -4,7 +4,8 @@
 # thx to: devgitw23 for bugfixing and log function
 # thx to: carsten rieger for the inspiration and his great tutorials
 clear
-set -e
+# Add error trapping
+trap 'echo "Error on line $LINENO"' ERR
 
 # running as root
 if [[ "$(id -u)" != "0" ]]; then
@@ -35,9 +36,14 @@ compare_versions() {
     local local_ver1="$1"
     local local_ver2="$2"
 
+    echo "Comparing $local_ver1 with $local_ver2"
+
     # Split the version strings into arrays
     IFS='.' read -r -a v1 <<< "$local_ver1"
     IFS='.' read -r -a v2 <<< "$local_ver2"
+
+    echo "v1: ${v1[@]}"
+    echo "v2: ${v2[@]}"
 
     # Pad the shorter version with zeros
     while [[ ${#v1[@]} -lt ${#v2[@]} ]]; do
@@ -47,16 +53,23 @@ compare_versions() {
         v2+=("0")
     done
 
+    echo "Padded v1: ${v1[@]}"
+    echo "Padded v2: ${v2[@]}"
+
     # Compare each segment
     for i in "${!v1[@]}"; do
+        echo "Comparing segment ${v1[i]} with ${v2[i]}"
         if ((10#${v1[i]} > 10#${v2[i]})); then
+            echo "Segment ${v1[i]} is greater than ${v2[i]}"
             return 1
         elif ((10#${v1[i]} < 10#${v2[i]})); then
+            echo "Segment ${v1[i]} is less than ${v2[i]}"
             return 2
         fi
     done
 
     # If all segments are equal
+    echo "All segments are equal"
     return 0
 }
 
@@ -137,12 +150,10 @@ if [[ -z "$config_version" ]]; then
     exit 1
 fi
 
-# Compare versions
+# Modify the version comparison section
 echo "Comparing versions: $config_version vs $version"
 compare_versions "$config_version" "$version"
 compare_result=$?
-# can be removed when it runs without errors - but for the moment it will stay just to check the result
-echo "Compare result: $compare_result"
 
 if [[ $compare_result -eq 0 ]]; then
     echo ""
@@ -154,7 +165,7 @@ elif [[ $compare_result -eq 1 ]]; then
     echo "The version in the config is newer than the specified version."
     echo ""
     exit 1
-else
+elif [[ $compare_result -eq 2 ]]; then
     echo ""
     echo "The given version is newer than the installed version in the config. Proceeding with the update."
     echo ""
