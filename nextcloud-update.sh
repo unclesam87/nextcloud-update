@@ -5,7 +5,7 @@
 # thx to: carsten rieger for the inspiration and his great tutorials
 clear
 # Add error trapping
-trap 'echo "Error on line $LINENO"' ERR
+trap 'if [[ $? != 1 ]] && [[ $? != 2 ]]; then echo "Error on line $LINENO"; fi' ERR
 
 # running as root
 if [[ "$(id -u)" != "0" ]]; then
@@ -33,17 +33,12 @@ usage() {
 
 # Function to compare versions
 compare_versions() {
-    local local_ver1="$1"
-    local local_ver2="$2"
-
-    echo "Comparing $local_ver1 with $local_ver2"
+    local local_ver1="$1"  # installed version
+    local local_ver2="$2"  # target version
 
     # Split the version strings into arrays
     IFS='.' read -r -a v1 <<< "$local_ver1"
     IFS='.' read -r -a v2 <<< "$local_ver2"
-
-    echo "v1: ${v1[@]}"
-    echo "v2: ${v2[@]}"
 
     # Pad the shorter version with zeros
     while [[ ${#v1[@]} -lt ${#v2[@]} ]]; do
@@ -53,24 +48,17 @@ compare_versions() {
         v2+=("0")
     done
 
-    echo "Padded v1: ${v1[@]}"
-    echo "Padded v2: ${v2[@]}"
-
     # Compare each segment
     for i in "${!v1[@]}"; do
-        echo "Comparing segment ${v1[i]} with ${v2[i]}"
         if ((10#${v1[i]} > 10#${v2[i]})); then
-            echo "Segment ${v1[i]} is greater than ${v2[i]}"
-            return 1
+            return 1  # Error: installed version newer
         elif ((10#${v1[i]} < 10#${v2[i]})); then
-            echo "Segment ${v1[i]} is less than ${v2[i]}"
-            return 2
+            return 0  # Success: can update
         fi
     done
 
     # If all segments are equal
-    echo "All segments are equal"
-    return 0
+    return 1  # Error: same version
 }
 
 # Parse command-line arguments
@@ -156,17 +144,6 @@ compare_versions "$config_version" "$version"
 compare_result=$?
 
 if [[ $compare_result -eq 0 ]]; then
-    echo ""
-    echo "The version in the config is the same as the specified version."
-    echo ""
-    exit 1
-elif [[ $compare_result -eq 1 ]]; then
-    echo ""
-    echo "The version in the config is newer than the specified version."
-    echo ""
-    exit 1
-elif [[ $compare_result -eq 2 ]]; then
-    echo ""
     echo "The given version is newer than the installed version in the config. Proceeding with the update."
     echo ""
     cd /tmp
@@ -242,6 +219,11 @@ elif [[ $compare_result -eq 2 ]]; then
     echo ""
     echo "Update done at $(date '+%d-%m-%Y %H:%M:%S')"
     echo ""
+    else
+    echo ""
+    echo "Cannot proceed: installed version ($config_version) is same or newer than target version ($version)"
+    echo ""
+    exit 1
 fi
 
 echo "Script completed."
